@@ -1,0 +1,119 @@
+html, body {
+
+  display: flex;
+  justify-content : center;
+  align-items: center;
+  gap: 10px;
+  flex-direction: column;
+  height:100vh;
+
+}
+#display_image{
+  width: 400px;
+  height:  300px;
+  border: 2px solid lawngreen;
+  border-radius: 25px;
+  background-size: cover;
+  margin: 5px;
+}
+#parent {
+  display: flex;
+}
+#rectangle {
+  height: 430px;
+  width: 320px;
+  border: solid black;
+  border-width: thin;
+  margin: 5px;
+}
+#rectangle2 {
+  height: 430px;
+  width: 320px;
+  border: solid black;
+  border-width: thin;
+  margin: 5px;
+}
+#centered{
+  left:50%;
+}
+
+#container {
+  position: relative;
+  text-align: center;
+}
+
+#high {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+#none {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+#medium {
+  position: absolute;
+  top: 20px;
+  left: 90px;
+}
+#low {
+  position: absolute;
+  top: 20px;
+  right: 100px;
+}
+#bp {
+  position: absolute;
+  top: 55px;
+  left: 20px;
+}
+#hr {
+  position: absolute;
+  top: 55px;
+  right: 20px;
+}
+#temp{
+  position: absolute;
+  top: 85px;
+  left: 20px;
+}
+#ventilation {
+  position: absolute;
+  top: 85px;
+  right: 20px;
+}
+#perfusion{
+  position: absolute;
+  top: 115px;
+  left: 20px;
+}
+#drugdelivery{
+  position: absolute;
+  top: 115px;
+  right: 20px;
+}
+#oxygenation{
+  position: absolute;
+  top: 145px;
+  left: 20px;
+}
+#failure{
+  position: absolute;
+  top: 145px;
+  right: 20px;
+}
+img {
+        display: inline-block;
+        width:100px;
+        height:110px;
+        position:absolute;
+        object-position: center;
+    }
+video {
+  display: block;
+  border-radius: 25px;
+  margin: 5px;
+  object-position: center;
+  position: absolute;
+  overflow: hidden;
+}
