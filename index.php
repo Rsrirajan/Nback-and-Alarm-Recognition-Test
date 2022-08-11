@@ -1,16 +1,30 @@
 <?php
-  session_start();
-  if (isset ($_SESSION['count'])){
-    $_SESSION['count'] += 1;
+
+  $serverhost = "localhost";
+  $user = ""; //database username
+  $password = ""; //database password
+  $databasename = "id19384306_visitors	";
+
+  $conn = mysqli_connect($serverhost, $user, $password, $databasename);
+
+  $sql = "UPDATE TOTAL_VISITS SET visits = visits+1 WHERE id = 1";
+  $conn->query($sql);
+
+  $sql = "SELECT visits FROM TOTAL_VISITS WHERE id = 1";
+  $query = mysqli_query($conn, $sql);
+
+  if ($query->num_rows > 0) {
+      while($row = $query->fetch_assoc()) {
+          $visits = $row["visits"];
+      }
   }
-  else{
-    $_SESSION['count'] = 1;
-  }
-  if ($_SESSION['count'] == 5){
-    $_SESSION['count'] = 1;
+  else {
+      echo "0";
   }
 
-  echo $_SESSION['count'];
+  $conn->close();
+
+  echo $visits;
 ?>
 <!DOCTYPE html>
 <html>
@@ -30,7 +44,7 @@
 <audio id="1" src="pointer1.wav"></audio>
 <audio id="2" src="nopointer2.wav"></audio>
 <audio id="3" src="nopointer3.wav"></audio>
-<audio id="4" src="pointer4.wav"></audio>
+<audio id="0" src="pointer4.wav"></audio>
 
 
 <a href = "https://redcap.vanderbilt.edu/surveys/?s=W34KFPDHMDPRAD8N" id = "survey" target = "_blank" style = "display: none;">Survey Link</a>
@@ -110,26 +124,18 @@
 <script>
   var video;
   var demo;
-  var visitCount = <?php echo $_SESSION['count']?>;
-  if (visitCount == 1){
+  var visitCount = <?php echo $visits % 4?>;
+  if (visitCount == 1 || visitCount == 0){
     demo = document.getElementById(visitCount);
     video = document.getElementById('video1');
     document.getElementById('video2').style.display = 'none';
+    console.log(demo.id, video.id);
   }
-  else if (visitCount == 2){
+  else if (visitCount == 2 || visitCount == 3){
     demo = document.getElementById(visitCount);
     video = document.getElementById('video2');
     document.getElementById('video1').style.display = 'none';
-  }
-  else if (visitCount == 3){
-    demo = document.getElementById(visitCount);
-    video = document.getElementById('video2');
-    document.getElementById('video1').style.display = 'none';
-  }
-  else if (visitCount == 4){
-    demo = document.getElementById(visitCount);
-    video = document.getElementById('video1');
-    document.getElementById('video2').style.display = 'none';
+    console.log(demo.id, video.id);
   }
 
   var runs = 0;
@@ -154,7 +160,7 @@
           display(temp2);
           console.log(temp2);
         }
-        else if (demo.currentTime > 30){
+        else if (demo.currentTime > (demo.duration-0.5)){
           demo.pause();
           var csvContent = "";
 
@@ -244,19 +250,9 @@
     demo.play();
     run();
   }
-  //var random = Math.floor((Math.random()*4)+1);
   var level;
   var levelNum;
-  /*var video;
-  var demo = document.getElementById(random);
-  if (random == 1 || random == 4){
-    video = document.getElementById("video1");
-    document.getElementById('video2').style.display = 'none';
-  }
-  else{
-    video = document.getElementById("video2")
-    document.getElementById('video1').style.display = 'none';
-  }*/
+
   function dataTransfer(button_id, patientNum){
     var timestamp = demo.currentTime;
     var min = Math.floor(timestamp / 60);
