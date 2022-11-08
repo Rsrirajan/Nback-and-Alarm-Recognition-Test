@@ -17,11 +17,10 @@
       while($row = $query->fetch_assoc()) {
           $visits = $row["visits"];
       }
-  }
-  else {
+  } else {
       echo "0";
   }
-
+  // counts number of visits to site
   $conn->close();
 
   echo $visits;
@@ -41,18 +40,20 @@
   <h2>Trial Data Collection: N-back Test</h2>
   <h4>Collect accuracy data and time of response with reference to audio file</h4>
 
+<!-- four different audio tracks distributed to participants based on their order of visit to the site -->
 <audio id="1" src="pointer1.wav"></audio>
 <audio id="2" src="nopointer2.wav"></audio>
 <audio id="3" src="nopointer3.wav"></audio>
 <audio id="0" src="pointer4.wav"></audio>
 
-
+<!-- survey that participant fills out after taking test -->
 <a href = "https://redcap.vanderbilt.edu/surveys/?s=W34KFPDHMDPRAD8N" id = "survey" target = "_blank" style = "display: none;">Survey Link</a>
 
 
 <audio id="right" src="good.mp3"></audio>
 <audio id="wrong" src="wrong.mp3"></audio>
-
+  
+// letter images
 <img id = "a" src = "https://raw.githubusercontent.com/AnanthSankaralingam/N2-Back/main/letterA.png"  style = "display:none;" onclick = "isGood()">
 <img id = "b" src = "https://raw.githubusercontent.com/AnanthSankaralingam/N2-Back/main/letterB.png"  style = "display:none;" onclick = "isGood()">
 <img id = "c" src = "https://raw.githubusercontent.com/AnanthSankaralingam/N2-Back/main/letterC.png"  style = "display:none;" onclick = "isGood()">
@@ -76,7 +77,7 @@
     <button id = "start" onclick="start()" style = "display:none;">Start Audio and Nback Test</button>
 </div>
 <br>
-
+<!-- buttons that the user clicks in response to the sounds -->
   <div id = "parent">
     <div id = "container">
       <div id = "rectangle">
@@ -124,19 +125,17 @@
 <script>
   var video;
   var demo;
+  // visitcount calculations
   var visitCount = <?php echo $visits % 4?>;
-  if (visitCount == 1 || visitCount == 0){
-    demo = document.getElementById(visitCount);
+  demo = document.getElementById(visitCount);
+  if (visitCount <= 1) {
     video = document.getElementById('video1');
     document.getElementById('video2').style.display = 'none';
-    console.log(demo.id, video.id);
-  }
-  else if (visitCount == 2 || visitCount == 3){
-    demo = document.getElementById(visitCount);
+  } else {
     video = document.getElementById('video2');
     document.getElementById('video1').style.display = 'none';
-    console.log(demo.id, video.id);
   }
+  console.log(demo.id, video.id); // logging for testing purposes
 
   var runs = 0;
   var rows = ["CSV Data File"];
@@ -145,33 +144,31 @@
   var displaying = 4;
   var letter;
   var letters = Array(document.getElementById("a"), document.getElementById("b"), document.getElementById("c"), document.getElementById("d"), document.getElementById("e"), document.getElementById("h"), document.getElementById("i"), document.getElementById("k"), document.getElementById("l"), document.getElementById("m"), document.getElementById("o"), document.getElementById("p"), document.getElementById("r"), document.getElementById("s"), document.getElementById("t"));
-
+  // array of letters shown that are part of Nback test
   function run(){
-
+    // runs the nback test using time intervals and records data to later be downloaded into csv file
     const interval = setInterval(() => {
         runs++;
-        if (runs == 1){
+        if (runs == 1) {
           temp1 = Math.floor(Math.random()*15);
           display(temp1);
           console.log(temp1);
-        }
-        else if (runs == 2){
+        } else if (runs == 2) {
           temp2 = Math.floor(Math.random()*15);
           display(temp2);
           console.log(temp2);
-        }
-        else if (demo.currentTime > (demo.duration-0.5)){
+        } else if (demo.currentTime > (demo.duration-0.5)){
           demo.pause();
           var csvContent = "";
-
+          
           rows.forEach(function(row) {
             if (typeof row[0] === "number"){
-                        csvContent += row.join(',') + "\n";
-                    }
-            else{
+               csvContent += row.join(',') + "\n";
+            } else{
               csvContent += row + "\n";
             }
           });
+          
           var hiddenElement = document.createElement('a');
           hiddenElement.href = 'data:attachment/text,' + encodeURI(csvContent);
           hiddenElement.target = '_blank';
@@ -180,19 +177,16 @@
 
           clearInterval(interval);
           document.getElementById('survey').style.display = "block";
-
-        }
-        else{
+        } else {
           displaying = Math.floor(Math.random()*15);
           letter = letters[displaying];
           letter.style.display = "block";
           window.setTimeout("letter.style.display='none';", 1500);
 
           setTimeout(() => {
-            if (runs % 2 == 0){
+            if (runs % 2 == 0) {
               temp2 = displaying;
-            }
-            else{
+            } else {
               temp1 = displaying;
             }
           }, 1499)
@@ -203,32 +197,28 @@
 
 
     }
-
-  function isGood(){
+  // to check if the user correctly clicks when the alternative letters match in the Nback test
+  function isGood() {
     console.log(temp1, temp2, displaying);
-    if (runs == 0){
+    if (runs == 0) {
         video.play();//error
-    }
-    else if ((!demo.paused || demo.currentTime) && runs > 2){
-      if (runs %2 == 0){
-        if (temp2 == displaying){
+    } else if ((!demo.paused || demo.currentTime) && runs > 2) {
+      if (runs %2 == 0) {
+        if (temp2 == displaying) {
           document.getElementById('right').play();
           rows.push(['right'])
           console.log("right1");
-        }
-        else{
+        } else {
           document.getElementById('wrong').play();
           rows.push(['wrong'])
           console.log("wrong1");
         }
-      }
-      else{
-        if (temp1 === displaying){
+      } else {
+        if (temp1 === displaying) {
           document.getElementById('right').play();
           rows.push(["right"])
           console.log("right2");
-        }
-        else{
+        } else {
           document.getElementById('wrong').play();
           rows.push(["wrong"])
           console.log("wrong2");
@@ -238,13 +228,13 @@
 
   }
 
-
+  // displays letters in square screen
   function display(num){
     letter = letters[num];
     letter.style.display = "block";
     window.setTimeout("letter.style.display='none';", 1500);
   }
-
+  
   function start(){
     video.style.display = "none";
     demo.play();
@@ -252,7 +242,7 @@
   }
   var level;
   var levelNum;
-
+  // logs patient data in console and to csv sheet using timestamps, button names, etc.
   function dataTransfer(button_id, patientNum){
     var timestamp = demo.currentTime;
     var min = Math.floor(timestamp / 60);
